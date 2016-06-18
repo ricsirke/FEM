@@ -8,22 +8,27 @@ class Vector():
         for arg in args:
             self.coords.append(arg)      
         
+		
+		
+    def get(self):
+        return self.coords
+    
+    def getCoord(self, a):
+        return self.coords[a]
+	
     def set(self, *args):
         if len(self.coords) != len(args):
             print 'Error in Vector: set method, different dimensions'
         else:
             self.coords = args
     
+	
+
     def inccoord(self, place, coord):
         self.coords[place] += coord
-        
-    def get(self):
-        return self.coords
-    
-    def getCoord(self, a):
-        return self.coords[a]
     
     def len(self):
+		# l2 norm don't work....
         """sum = 0
         for coord in self.coords:
             sum += coord**2
@@ -33,13 +38,12 @@ class Vector():
             if max < coord:
                 max = coord
         return max 
-		
-	def llen(self):
-		sum = 0
-        for coord in self.coords:
-            sum += coord**2
-        return sqrt(sum)
     
+	
+	
+	
+	
+	
     def __add__(self, b):
         return Vector(*[self.coords[i] + b.coords[i] for i in range(len(self.coords))])
         

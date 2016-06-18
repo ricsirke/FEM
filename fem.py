@@ -5,6 +5,7 @@ from scipy.linalg import toeplitz
 from numpy.linalg import solve, det
 from mesh import *
 from pylab import *
+import sys
 
 def load_function(x,y):
 	return 2*x + y
@@ -14,7 +15,7 @@ def pont_sol(x,y):
 
 
 def load_mesh():
-	mc = Mesh_control()
+	mc = Mesh_control(int(sys.argv[1]))
 	mc.make_mesh(x1=0.0, y1=0.0, x2=0.0, y2=1.0, x3=2.0, y3=0.0)
 	return mc.mesh
 	
@@ -95,18 +96,21 @@ def run_plot(m):
 	error = np.zeros(N)
 	
 	smallest_side = m.get_tria_smallest_side()
-	print smallest_side
+	print "smallest side ", smallest_side
 	
 	errors = []
+	pont = [0.25, 1.0]
 	for i in range(N):
 		node_coords = m.nodes[i].pos.coords
 		xpont[i] = pont_sol(*node_coords)
-		error[i] = abs(xpont[i] - x[i])
+		error[i] = np.fabs(xpont[i] - x[i])
+		if node_coords == pont:
+			print "pont, koz, hiba: ", xpont[i], x[i], error[i]
 		errors.append({"error": error[i], "pos": m.nodes[i].pos, "i":i})
 		
-	#errors_num = [err["error"] for err in errors if err["pos"].coords == [0.5, 0.5]]
+	error_pont = [err["error"] for err in errors if err["pos"].coords == [0.25, 1.0]]
 	errors_num = [err["error"] for err in errors]
-	#print "error in (0.5, 0.5): ", max(errors_num)
+	print "error in ", pont, ": ", error_pont
 	print "sum of errors: ", np.sum(errors_num)
 		
 	# plotting the solution

@@ -2,6 +2,7 @@ from Vector import Vector
 import itertools as it
 from numpy import absolute
 from numpy import array as nparray
+from numpy.linalg import norm
 #from scipy.spatial import Delaunay
 
 class Node():
@@ -58,10 +59,12 @@ class Mesh():
 	def get_tria_smallest_side(self):
 		tria = self.get_one_tria()
 		s1 = nparray((tria[0].pos - tria[1].pos).coords)
-		print absolute(s1)
-		s2 = tria[0].pos - tria[2].pos
-		s3 = tria[1].pos - tria[2].pos
-		return min([1])
+		s2 = nparray((tria[0].pos - tria[2].pos).coords)
+		s3 = nparray((tria[1].pos - tria[2].pos).coords)
+        
+		lens = [norm(s1, ord=2), norm(s2, ord=2), norm(s3, ord=2)]
+		return min(lens)
+        
 	
 	def set_indices(self):
 		for i in range(len(self.nodes)):
@@ -84,12 +87,16 @@ class Mesh():
 			# have to watch parent nodes common neighbours - can be a subroutine
 			n1_neighbours = []
 			n2_neighbours = []
+			
 			for face in parent_nodes[0].faces:
 				n1_neighbours += face.nodes
 			for face in parent_nodes[1].faces:
 				n2_neighbours += face.nodes
 			
-			if len(set(n1_neighbours).intersection(set(n2_neighbours))) == 0:
+			# boundary if and only if the parent nodes has 0 or 1 common neighbours
+			# WHY?????
+			intersect = [nde for nde in n1_neighbours if nde in n2_neighbours]
+			if len(intersect) == 0 or len(intersect) == 1:
 				return True
 			else:
 				return False
@@ -161,8 +168,9 @@ class Mesh():
 		self.set_indices()
 	
 class Mesh_control():
-	def __init__(self):
+	def __init__(self, fine_times=4):
 		self.mesh = None
+		self.fine_times = fine_times
 	
 	def save_mesh(self, filename):
 		import pickle as p
@@ -176,14 +184,12 @@ class Mesh_control():
 			
 	def make_mesh(self, x1=0.0, y1=0.0, x2=0.0, y2=1.0, x3=1.6, y3=0.2):
 		self.mesh = Mesh()
-		self.mesh.nodes.append(Node(Vector(x1, y1)))
-		self.mesh.nodes.append(Node(Vector(x2, y2)))
-		self.mesh.nodes.append(Node(Vector(x3, y3)))
-		self.mesh.faces.append(self.mesh.make_tri(*self.mesh.nodes))
-		####
-		fineTimes = 4
-		####
-		for i in range(fineTimes):
+		self.mesh.boundaries.append(Node(Vector(x1, y1)))
+		self.mesh.boundaries.append(Node(Vector(x2, y2)))
+		self.mesh.boundaries.append(Node(Vector(x3, y3)))
+		self.mesh.faces.append(self.mesh.make_tri(*self.mesh.boundaries))
+
+		for i in range(self.fine_times):
 			###print str(i) + "/" + str(fineTimes)
 			self.mesh.fine_mesh()	
 	
