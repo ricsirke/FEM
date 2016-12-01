@@ -170,17 +170,7 @@ class Mesh():
 class Mesh_control():
 	def __init__(self, fine_times=4):
 		self.mesh = None
-		self.fine_times = fine_times
-	
-	def save_mesh(self, filename):
-		import pickle as p
-		with open(filename, "wb") as f:
-			p.dump(self.mesh, f)
-			
-	def load_mesh(self, filename):
-		import pickle as p
-		with open(filename, "r") as f:
-			self.mesh = p.load(f)		
+		self.fine_times = fine_times		
 			
 	def make_mesh(self, x1=0.0, y1=0.0, x2=0.0, y2=1.0, x3=1.6, y3=0.2):
 		self.mesh = Mesh()
@@ -191,7 +181,9 @@ class Mesh_control():
 
 		for i in range(self.fine_times):
 			###print str(i) + "/" + str(fineTimes)
-			self.mesh.fine_mesh()	
+			self.mesh.fine_mesh()
+			
+		return self.mesh
 	
 #mc = Mesh_control()
 #mc.make_mesh()
