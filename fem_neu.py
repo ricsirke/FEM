@@ -69,9 +69,7 @@ def run_plot(m):
 	
 	A = np.zeros((N, N))
 	b = np.zeros(N)
-	
-	
-	
+		
 	small_side = m.get_tria_smallest_side()
 	
 	for i in range(N):
@@ -90,6 +88,8 @@ def run_plot(m):
 			A[i,node.index] = sum
 		#print str(i)+"/"+str(N)
 		
+        #####################################################
+        
 		# constructing b
 		# ith comp = 1/3 * f(Ni) * (6*area of one tria)
 		node_coords = m.nodes[i].pos.coords
@@ -114,10 +114,15 @@ def run_plot(m):
 		
 	#print A
 	#print "determinant of the stiffness matrix: " + str(det(A))
+    
+    #####################################################
 
 	# solving Ax=b
 	x = solve(A,b)
 	
+    ########################################################################################################
+    ########################################################################################################
+    
 	# error calc
 	xpont = np.zeros(N)
 	error = np.zeros(N)
@@ -136,6 +141,9 @@ def run_plot(m):
 	errors_num = [err["error"] for err in errors]
 	#print "error in (0.5, 0.5): ", max(errors_num)
 	print "sum of errors: ", np.sum(errors_num)
+    
+    ########################################################################################################
+    ########################################################################################################
 		
 	# plotting the solution
 	xi = np.linspace(0, 2, 1000)
