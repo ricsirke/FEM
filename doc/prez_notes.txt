@@ -1,0 +1,37 @@
+A védésen 15 percben ismertetni kell majd a dolgozatot.
+Ehhez jó ha készít egy Latex beamer csomagban készült prezentációt.
+
+Ebben fõleg az elért eredményeket hangsúlyozza majd. Azaz nem kell a bizottságnak felsorolnia a sok elméleti definíciót és tételt,
+hanem csak arra lehet koncentrálni, hogy mit csinált.
+
+Le lehet írni a végeselem-módszer lépéseit, azokról beszélni,
+ill. kül. numerikus eredményeket mutogatni.
+
+
+Ha elküldi majd elõtte, akkor azt is szívesen megnézem majd.
+
+
+
+végeselem-módszer lépései:
+    - rács
+        - konstrukció
+        - ábra
+        
+    - egyenlet, diszkr
+        - egyenlet
+        - gyenge alak
+        - diszkr
+        
+    - elemi meverségi
+        - 
+        - integrál köz
+        
+    - merevségi összeállítása
+        
+    - terhelési vektor
+        - integrál köz
+    
+    
+numerikus eredmények:
+    - 
+    - hibák ??? para - még meg kéne kérdezni
