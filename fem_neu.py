@@ -13,6 +13,19 @@ def load_function(x,y):
 def pont_sol(x,y):
     return x*(1-(x/2)-y)
     
+def sol_plot(point_coords, point_values):
+    # plotting the solution
+    xi = np.linspace(0, 2, 1000)
+    yi = np.linspace(0, 2, 1000)
+    x_ax = [node.pos.coords[0] for node in point_coords]
+    y_ax = [node.pos.coords[1] for node in point_coords]
+
+    zi = griddata(x_ax, y_ax, point_values, xi, yi, interp='linear')
+    
+    cs = plt.contourf(xi,yi,zi, cmap=plt.cm.rainbow, vmax=abs(zi).max(), vmin=-abs(zi).max())
+    cbar = plt.colorbar(cs)
+    plt.show()
+    
 def bound_g(x,y):
     #return -1 + x + y
     return x
@@ -112,7 +125,7 @@ def run_plot(m):
             
             #print bound_g(*node_coords), bound_integral
         #b[i] = (load_function(*node_coords) * (len(conn_faces)*tri_area))/3 + bound_integral
-        b[i] = (tri_area)/3 - (bound_g(*node_coords)*(1/15.0))/2
+        b[i] = (tri_area)/3.0 - (bound_g(*node_coords)*(2/16.0))/2.0
         
     #print A
     #print "determinant of the stiffness matrix: " + str(det(A))
@@ -145,7 +158,7 @@ def run_plot(m):
     print "sum of errors: ", np.sum(errors_num)
     
     ########################################################################################################
-    
+    import dbg
     #DBG
     # neupos
     neucount = 0
@@ -153,23 +166,24 @@ def run_plot(m):
         nd = m.nodes[ndi]
         if nd.neu:
             neucount += 1
-            #print ndi, nd.pos.coords
+            print ndi, nd.pos.coords
     print "# of neu nodes:", neucount
     
-    print "\n b[0]:", b[0]
+    print "\n\ntri area:", tri_area
+    #print "N_0 pos:", m.nodes[0].pos.coords
+    
+    dbg.test_b()
+    print "computed b values"
+    print "b[0]:", b[0]
+    print "b[50]:", b[50]
+    print "b[53]:", b[53]
     
     ########################################################################################################
         
     # plotting the solution
-    xi = np.linspace(0, 2, 1000)
-    yi = np.linspace(0, 3, 1000)
-    x_ax = [node.pos.coords[0] for node in m.nodes]
-    y_ax = [node.pos.coords[1] for node in m.nodes]
-
-    zi = griddata(x_ax, y_ax, x, xi, yi, interp='linear')
-    cs = plt.contourf(xi,yi,zi, cmap=plt.cm.rainbow, vmax=abs(zi).max(), vmin=-abs(zi).max())
-    cbar = plt.colorbar(cs)
-    plt.show()
+    all_nodes = m.nodes + m.boundaries
+    all_values = np.concatenate((x, [0 for i in range(len(m.boundaries))]))
+    sol_plot(all_nodes, all_values)
 
     
     
