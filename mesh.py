@@ -47,7 +47,6 @@ class Mesh():
         n1_neigh = n1.get_neighbour_nodes()
         n2 = n1_neigh[0]
         n2_neigh = n2.get_neighbour_nodes()
-        #n1_n2_intersect = set(n1_neigh).intersection(set(n2_neigh))
         n1_n2_intersect = [item for item in n1_neigh if item not in n2_neigh]
         n3 = list(n1_n2_intersect)[0]
         return [n1,n2,n3]
@@ -65,7 +64,6 @@ class Mesh():
         lens = [norm(s1, ord=2), norm(s2, ord=2), norm(s3, ord=2)]
         return min(lens)
         
-    
     def set_indices(self):
         for i in range(len(self.nodes)):
             self.nodes[i].index = i
@@ -172,10 +170,8 @@ class Mesh_control():
         self.mesh = None
         self.fine_times = fine_times        
             
-    def make_mesh(self, x1=0.0, y1=0.0, x2=0.0, y2=1.0, x3=1.6, y3=0.2):
+    def make_mesh(self, x1=0.0, y1=0.0, x2=0.0, y2=1.0, x3=2.0, y3=0.0):
         self.mesh = Mesh()
-        
-        #new
         self.mesh.mainVerts = [(x1,y1),(x2,y2),(x3,y3)]
         
         self.mesh.boundaries.append(Node(Vector(x1, y1)))

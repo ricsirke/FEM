@@ -8,13 +8,6 @@ from compgeom import *
 from pylab import *
 import sys
 
-def load_function(x,y):
-    return 2*x + y
-    
-def pont_sol(x,y):
-    return x*y*(1-(x/2)-y)
-    
-# get plane val
 def plane_val(point, plane_coeff):
     return np.dot(plane_coeff, point)
     
@@ -23,8 +16,14 @@ def getNodeByPosCoords(nodes, pos_coords):
         if nodes[ndind].pos.coords == pos_coords:
             return nodes[ndind], ndind
     return None, None
+
+
+
+def load_function(x,y):
+    return 2*x + y
     
-    
+def pont_sol(x,y):
+    return x*y*(1-(x/2)-y)   
 
 
 def load_mesh():
@@ -48,7 +47,7 @@ def sol_plot(point_coords, point_values):
     
 def run_plot(m):
     tri_area = m.get_one_tria_area()
-    print tri_area
+    print "tri_area:", tri_area
     N = len(m.nodes)
 
     for face in m.faces:
@@ -113,46 +112,27 @@ def run_plot(m):
             
         #print str(i)+"/"+str(N)
         
+        #####################################################
+        
         # constructing b
         # ith comp = 1/3 * f(Ni) * (6*area of one tria)
         node_coords = m.nodes[i].pos.coords
-        # how many triangle has this node
         conn_faces = m.nodes[i].faces
-        #print len(conn_faces)
+
         b[i] = (load_function(*node_coords) * (len(conn_faces)*tri_area))/3
         
     #print A
-    #print "determinant of the stiffness matrix: " + str(det(A))
+    print "determinant of the stiffness matrix: " + str(det(A))
     print "stiffness matrix, load vector ready"
 
-    # solving Ax=b    
+    # solving Ax=b
     x = solve(A,b)
     print "linear system solved"
     
+    ########################################################################################################
+    
     # error calc
-    xpont = np.zeros(N)
-    error = np.zeros(N)
-    
-    smallest_side = m.get_tria_smallest_side()
-    print "smallest side ", smallest_side
-    
-    """
-        errors = []
-        pont = [0.125, 0.5]
-        for i in range(N):
-            node_coords = m.nodes[i].pos.coords
-            xpont[i] = pont_sol(*node_coords)
-            error[i] = np.fabs(xpont[i] - x[i])
-            if node_coords == pont:
-                print "pont, koz, hiba: ", xpont[i], x[i], error[i]
-            errors.append({"error": error[i], "pos": m.nodes[i].pos, "i":i})
-            
-        error_pont = [err["error"] for err in errors if err["pos"].coords == pont]
-        errors_num = [err["error"] for err in errors]
-        print "error in ", pont, ": ", error_pont
-        print "sum of errors: ", np.sum(errors_num)
-    """
-    
+
     # creating the middle point to check errors for the different resolutions
     err_point = [0,0]
     for v in m.mainVerts:
@@ -189,9 +169,10 @@ def run_plot(m):
     sol_diff = np.abs(sol_appr - pont_sol(*err_point))
     print "error:", sol_diff
     
+    ########################################################################################################
+    
     # plotting the solution
     all_nodes = m.nodes + m.boundaries
-    # mapping by index
     all_values = np.concatenate((x, [0 for i in range(len(m.boundaries))]))
     sol_plot(all_nodes, all_values)
 

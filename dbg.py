@@ -1,4 +1,26 @@
+import numpy as np
+from numpy.linalg import solve
 
+def test_A(nodes):
+    FIN = 4.0 
+    
+    def ter(i):
+        return (1.0/4.0)**i
+    
+    p50 = nodes[50].pos.coords
+    p24 = nodes[24].pos.coords
+    p49 = nodes[49].pos.coords
+    A_ell = [ [ p50[0], p50[1], 1 ], [ p24[0], p24[1], 1 ], [ p49[0], p49[1], 1 ] ]
+    b_ell_1 = [1, 0, 0]
+    b_ell_2 = [0, 1, 0]
+    
+    grad50 = solve(A_ell, b_ell_1)[0:-1]
+    grad24 = solve(A_ell, b_ell_2)[0:-1]
+    
+    return np.dot(grad50, grad24)*ter(FIN)
+    
+    
+    
     
     
 def test_b():
@@ -25,3 +47,4 @@ def test_b():
     
 if __name__ == "__main__":
     test_b()
+    #test_A()

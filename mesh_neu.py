@@ -2,6 +2,7 @@ from Vector import Vector
 import itertools as it
 from numpy import absolute
 from numpy import array as nparray
+from numpy.linalg import norm
 from math import sqrt
 #from scipy.spatial import Delaunay
 
@@ -38,9 +39,10 @@ class Face():
         self.nodes.append(n3)
         
 class Mesh():
-    nodes = []
-    faces = []
-    boundaries = []
+    def __init__(self):
+        self.nodes = []
+        self.faces = []
+        self.boundaries = []
     
     def get_one_tria(self):
         n1 = self.nodes[4]
@@ -55,18 +57,14 @@ class Mesh():
         tria = self.get_one_tria()
         return absolute((tria[0].pos.coords[0] - tria[2].pos.coords[0])*(tria[1].pos.coords[1] - tria[0].pos.coords[1]) - (tria[0].pos.coords[0] - tria[1].pos.coords[0])*(tria[2].pos.coords[1] - tria[0].pos.coords[1]))/2
     
-    def vec_len(self, vec):
-        sum = 0
-        for coord in vec.coords:
-            sum += coord**2
-        return sqrt(sum)
-    
     def get_tria_smallest_side(self):
         tria = self.get_one_tria()
-        s1 = tria[0].pos - tria[1].pos
-        s2 = tria[0].pos - tria[2].pos
-        s3 = tria[1].pos - tria[2].pos
-        return min([self.vec_len(s1), self.vec_len(s2), self.vec_len(s3)])
+        s1 = nparray((tria[0].pos - tria[1].pos).coords)
+        s2 = nparray((tria[0].pos - tria[2].pos).coords)
+        s3 = nparray((tria[1].pos - tria[2].pos).coords)
+        
+        lens = [norm(s1, ord=2), norm(s2, ord=2), norm(s3, ord=2)]
+        return min(lens)
     
     def set_indices(self):
         for i in range(len(self.nodes)):
@@ -179,22 +177,14 @@ class Mesh():
         self.set_indices()
     
 class Mesh_control():
-    def __init__(self, fine_times):
+    def __init__(self, fine_times=4):
         self.mesh = None
-        self.fine_times = fine_times
-    
-    def save_mesh(self, filename):
-        import pickle as p
-        with open(filename, "wb") as f:
-            p.dump(self.mesh, f)
-            
-    def load_mesh(self, filename):
-        import pickle as p
-        with open(filename, "r") as f:
-            self.mesh = p.load(f)        
+        self.fine_times = fine_times        
             
     def make_mesh(self, x1=0.0, y1=0.0, x2=0.0, y2=1.0, x3=2.0, y3=0.0):
         self.mesh = Mesh()
+        self.mesh.mainVerts = [(x1,y1),(x2,y2),(x3,y3)]
+        
         n1 = Node(Vector(x1, y1))
         n1.neu = True
         n2 = Node(Vector(x2, y2))
@@ -207,10 +197,10 @@ class Mesh_control():
         self.mesh.faces.append(self.mesh.make_tri(n1, n2, n3))
         
         for i in range(self.fine_times):
-            ###print str(i) + "/" + str(fineTimes)
+            print str(i) + "/" + str(self.fine_times), "fine"
             self.mesh.fine_mesh()
             
-        return self.mesh    
+        return self.mesh
     
 #mc = Mesh_control()
 #mc.make_mesh()
