@@ -57,9 +57,10 @@ def sol_plot(point_coords, point_values):
     plt.show()
     
 def bound_g(x,y):
-    #return -1 + x + y
-    return x
+    return -1 + x + y
+    #return x
     
+"""
 # primitive functions for the boundary integrals
 def F1(x):
     return ((x**3)/3) - ((x**2)/2)
@@ -71,7 +72,7 @@ def F2(x):
 def bound_int(x0, x1, x2):
     return F1(x1) - F1(x0) - F2(x2) + F2(x1)
 
-    
+""" 
 
     
 def run_plot(m):    
@@ -165,7 +166,7 @@ def run_plot(m):
             
             #print bound_g(*node_coords), bound_integral
         #b[i] = (load_function(*node_coords) * (len(conn_faces)*tri_area))/3 + bound_integral
-        b[i] = (tri_area)/3.0 + bound_integral
+        b[i] = (load_function(*node_coords) * len(conn_faces))*(tri_area)/3.0 + bound_integral
         
     print A    
     print "determinant of the stiffness matrix: " + str(det(A))
@@ -173,8 +174,22 @@ def run_plot(m):
     #####################################################
 
     # solving Ax=b
-    x = solve(A,b)
+    #x = solve(A,b)
     
+    alpha = 0.001
+    
+    x0 = np.zeros(N)
+    x = x0
+    i = 0
+    imax = 1000
+    err = np.dot(A,x) - b
+    while np.linalg.norm(err) > 0.001 and i < imax:
+        x = x - alpha*( np.dot(A, x) - b )
+        i += 1
+        
+    if i == imax:
+        print "IMAX"
+        
     ########################################################################################################
     
     #DBG
@@ -214,7 +229,7 @@ def run_plot(m):
     
     print "test_A:", dbg.test_A(m.nodes)
     
-    print x
+    print "b[49]:", b[49], m.nodes[49].pos.coords
     
     ########################################################################################################
     

@@ -37,11 +37,15 @@ def test_b():
 
     def b(Ni):    
         return (ter(FIN))/3.0 - (g(Ni)*hossz(FIN))/2.0
+        
+    def bnb(Ni):
+        return 6*(ter(FIN))/3.0 # FIX
 
     print "actual b values:"
     print "b0:", b([1.0,0.0])
     print "b50:", b([1.875, 0])
     print "b53:", b([1.625, 0])
+    print "b49:", bnb([1.75, 0.0625])
     
     
     

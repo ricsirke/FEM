@@ -200,6 +200,10 @@ class Mesh_control():
             print str(i) + "/" + str(self.fine_times), "fine"
             self.mesh.fine_mesh()
             
+            
+        n1.neu = False    
+        n3.neu = False
+        
         return self.mesh
     
 #mc = Mesh_control()

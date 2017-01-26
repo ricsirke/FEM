@@ -10,13 +10,13 @@ offset = 30
 offset_vec = Vector(offset,offset)
 
 def draw_canvas(canvas, bound, color):
-		rad = 3
+		rad = 7
 		pos = bound.pos.coords
 		coords = (pos[0]*magn - rad + offset, pos[1]*magn - rad + offset, pos[0]*magn + rad + offset, pos[1]*magn + rad + offset)
 		canvas.create_oval(*coords, fill=color)
 		
 def draw_face(canvas, face):
-    canvas.create_polygon((face.nodes[0].pos*magn + offset_vec).coords, (face.nodes[1].pos*magn + offset_vec).coords, (face.nodes[2].pos*magn + offset_vec).coords, fill="", outline="black")
+    canvas.create_polygon((face.nodes[0].pos*magn + offset_vec).coords, (face.nodes[1].pos*magn + offset_vec).coords, (face.nodes[2].pos*magn + offset_vec).coords, fill="", outline="black", width=4)
 
 	
 def draw_mesh(m):
@@ -36,15 +36,15 @@ def draw_mesh(m):
 			draw_canvas(canvas, node, "red")
 			
 	node_list = []
-	neu_node = [node for node in m.nodes if node.neu][6]
+	#neu_node = [node for node in m.nodes if node.neu][6]
 	#neu_neighs = [node for node in neu_node.get_neighbour_nodes(withBounds=True)]
-	neu_neighs = [neigh for neigh in neu_node.get_neighbour_nodes(withBounds=True) if neigh.pos.coords[1] == 0 and neigh.pos.coords[0] != neu_node.pos.coords[0]]
-	
+	#neu_neighs = [neigh for neigh in neu_node.get_neighbour_nodes(withBounds=True) if neigh.pos.coords[1] == 0 and neigh.pos.coords[0] != neu_node.pos.coords[0]]
+	"""
 	draw_canvas(canvas, neu_node, "white")
 	
 	for node in neu_neighs:
 		draw_canvas(canvas, node, "black")
-		
+    """
 	canvas.pack()
 	root.mainloop()
 
